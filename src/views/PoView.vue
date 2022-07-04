@@ -180,7 +180,7 @@ const config = {
         PoV:[
           {
             name: 'Video 1',
-            owner: 'ss2022_jc.testnet',  //wallet
+            owner: 'ss2022_jc.testnet',  //wallet .
             video_id: 2,
             PoV: "PoV 1 en el video 2 de Jorge",
           },
