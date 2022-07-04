@@ -13,7 +13,7 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/moment',
+      path: '/moment/:video_id?',
       name: 'moment',
       component: MomentView
     },
@@ -23,12 +23,12 @@ export default new Router({
       component: ExperiencesView
     },
     {
-      path: '/pov',
+      path: '/pov/:video_id?',
       name: 'pov',
       component: PoView
     },
     {
-      path: '/about',
+      path: '/about/:video_id',
       name: 'about',
       component: AboutView
     }

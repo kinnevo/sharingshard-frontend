@@ -1,8 +1,9 @@
 <template>
+<div class="momentview">
 <v-main fluid>
     <v-layout row wrap>
       <v-flex xs12 class="text-xs-center" mt-5>
-        <h1>Moment</h1>
+        <h1 class="subheading grey--text">Moment</h1>
       </v-flex>
       <v-flex xs12 class="text-xs-center" mt-3>
         <p>Define a moment in a video that helps to understand a challenge</p>
@@ -46,7 +47,7 @@
 
                 name="input-7-4"
                 label="Moment"
-                value=moment
+                value=ss_moment_moment_time
                 auto-grow
                 rows="15"
                 row-height="15"
@@ -69,7 +70,7 @@
               <v-btn class="pa-2"
                 depressed
                 color="primary"
-                @click=clickea
+                @click=clickea_insert_moment
               >
                 Insert
               </v-btn>
@@ -79,6 +80,7 @@
               <v-btn class="pa-2"
                 depressed
                 color="primary"
+                @click=clickea_edit_moment()
               >
                 Edit
               </v-btn>
@@ -88,6 +90,7 @@
               <v-btn class="pa-2"
                 depressed
                 color="primary"
+                @click=clickea_delete_moment()
               >
                 Delete
               </v-btn>
@@ -95,59 +98,119 @@
           </v-row>
         </v-col>
       </v-row>
-
-      <v-row no-gutters>
-          <v-col
-            v-for="n in 3"
-            :key="n"
-            cols="12"
-            sm="4"
-          >
-            <v-card
-              class="pl-10 py-5"
-              outlined
-              tile
-            >
-              One of three columns
-            </v-card>
-          </v-col>
-      </v-row>
 </v-main>
+
+  </div>
 </template>
-    
+
 <script>
+ 
+
+
+import * as nearAPI from 'near-api-js'
+const { connect, WalletConnection, keyStores, Contract } = nearAPI;
+
+const CONTRACT_ID = "dev-1656452729299-85030592138402";
+const config = {
+  networkId: 'testnet',
+  keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+  nodeUrl: 'https://rpc.testnet.near.org',
+  walletUrl: 'https://wallet.testnet.near.org',
+  helperUrl: 'https://helper.testnet.near.org',
+  explorerUrl: 'https://explorer.testnet.near.org'
+};
+
+
   export default {
     name: "MomentView",
-    data() {
+    created(){
+      console.log("created: " + window.location.href);
 
+      //console.log("created2: " + this.$route.params.video_id);
+
+      this.video_id = this.$route.query.video_id;
+
+      this.url_experiencia = this.$route.query.url,
+            console.log( this.url_experiencia );
+
+      this.title = this.$route.query.title,
+      this.description = this.$route.query.description,
+      this.id = this.$route.query.id,
+      this.owner = this.$route.query.owner,
+      this.reward = this.$route.query.reward,
+
+      this.timss_moment_moment_timee = this.$route.query.time,
+      this.moment=this.$route.query.moment,
+
+      this.disp_experiences();
+    },
+    updated(){
+        console.log("updated: " + window.location.href);
+    },
+
+
+    data(){
       return {
-          moment_view: "",
-          title: "Video de pruebas",
-          url_experiencia: "https://youtube.com/embed/WCUGI8PGcGw",
-          time: 10,
-          moment: "cadena de caracteres",
-          btn_insert: "Insert",
-          btn_edit: "Edit",
-          btn_delete: "Delete",
-          textarea: null,
-          ss_moment_moment: "",
-          ss_moment_moment_time: 33,
+        video_info: 0,
+        exp_list: [""],
+        exp_info: "",
+        x_screen_data: [""],
+
+        url: "",
+        title: "",
+        description: "",
+        id: 0,
+        owner: "",
+        reward: 0,
+
+        ss_moment_moment_time: 0,
+        ss_moment_moment: "",
 
       }
     },
+
     methods: {
-        clickea(){
-          console.log( "Captura: " + this.ss_moment_moment + "----" + this.ss_moment_moment_time );
-        }
-    },
+      async disp_experiences(){
+        
+        const near = await connect(config);
+        const wallet = new WalletConnection(near, 'ss');
 
-    computed: {
-      messageClass(){
-        return {
-          'md-invalid': this.hasMessages
+        const contract = new Contract(wallet.account(), CONTRACT_ID, {
+          viewMethods:  ['getNumber_of_experiences', 'getUser_exp','getExperience'],
+          sender: wallet.account()
+        });
+
+        // use a contract view method
+        this.video_info = await contract.getNumber_of_experiences();
+        console.log( this.video_info );
+
+        this.exp_list = await contract.getUser_exp({
+          "wallet": "zavala55.testnet"
+        });
+        console.log( this.exp_list );
+
+        for ( let i = 0 ; i < this.exp_list.length ; i++  ){
+
+          this.exp_info = await contract.getExperience({
+            video_n: this.exp_list[i]
+          });
+          console.log( this.exp_info );
+          this.x_screen_data[i] = this.exp_info;
         }
-      }
-    }
+        
+        console.log( this.x_screen_data );
+
+      },
+      clickea_insert_moment(){
+        console.log( "clickea_insert_moment");
+      },
+      clickea_edit_moment(){
+        console.log( "clickea_edit_moment");
+      },
+      clickea_delete_moment(){
+        console.log( "clickea_delete_moment");
+      },
+
+    },
   }
-  
 </script>

@@ -32,14 +32,14 @@
             <div class="grey--text">{{ experienciesview[item-1].url }}</div>
           </v-card-text>
           <v-card-actions>
-            <v-btn text color="grey">
+            <v-btn text color="grey" @click="goToMoment( item )">
               <v-icon small left>mdi-message</v-icon>
               <span class="">Moment</span>
             </v-btn>
           </v-card-actions>
 
           <v-card-actions>
-            <v-btn text color="grey">
+            <v-btn text color="grey" @click="goToPoV( item )">
               <v-icon small left>mdi-message</v-icon>
               <span class="">PoV</span>
             </v-btn>
@@ -146,9 +146,45 @@ struct Experience{
       console.log( this.experienciesview );
       this.display_experiencies = true;
 
-    }
+    },
+    goToMoment( video_id ){
+      // in moment we use QUERY as a reference to pass information between the source page and the moment page
+      // this.$router.push('/moment');
+    // console.log("goToMoment\n");
+      //if the route accepts params, you can also use
+      this.$router.push({
+        name:'moment', 
+        params: {id: video_id  }, 
+        query: { 
+          'video_id' : video_id, 
 
+          "url" : this.experienciesview[video_id - 1].url,
+          "title" : this.experienciesview[video_id - 1].title,
+          "description" : this.experienciesview[video_id - 1].description,
+          "id" : this.experienciesview[video_id - 1].id,
+          "owner" : this.experienciesview[video_id - 1].owner,
+          "reward" : this.experienciesview[video_id - 1].reward,
 
-  },
+          "time" : this.experienciesview[video_id - 1].time,
+          "moment" : this.experienciesview[video_id - 1].moment,
+
+        }} );
+    },
+    goToPoV( video_id ){
+
+      console.log( "video:id: " + video_id);
+
+      // in moment we use param as a reference
+      // in PoV we use PARAMETER as a reference to pass information between the source page and the moment page
+
+    // this.$router.push('/moment');
+    // console.log("goToPoV\n");
+      //if the route accepts params, you can also use
+      this.$router.push({
+        name:'pov', 
+        params: {video_id: video_id  }, 
+        } );
+    },
+  },  
 }
 </script>
