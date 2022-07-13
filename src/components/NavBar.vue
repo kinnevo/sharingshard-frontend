@@ -22,7 +22,7 @@
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores } = nearAPI;
 
-const CONTRACT_ID = "dev-1656452729299-85030592138402";
+const CONTRACT_ID = "dev-1656920990559-86772243239643";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),

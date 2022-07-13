@@ -110,7 +110,7 @@
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1656452729299-85030592138402";
+const CONTRACT_ID = "dev-1656920990559-86772243239643";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -176,22 +176,22 @@ const config = {
         const wallet = new WalletConnection(near, 'ss');
 
         const contract = new Contract(wallet.account(), CONTRACT_ID, {
-          viewMethods:  ['getNumber_of_experiences', 'getUser_exp','getExperience'],
+          viewMethods:  ['get_number_of_experiences', 'get_user_exp','get_experience'],
           sender: wallet.account()
         });
 
         // use a contract view method
-        this.video_info = await contract.getNumber_of_experiences();
+        this.video_info = await contract.get_number_of_experiences();
         console.log( this.video_info );
 
-        this.exp_list = await contract.getUser_exp({
+        this.exp_list = await contract.get_user_exp({
           "wallet": "zavala55.testnet"
         });
         console.log( this.exp_list );
 
         for ( let i = 0 ; i < this.exp_list.length ; i++  ){
 
-          this.exp_info = await contract.getExperience({
+          this.exp_info = await contract.get_experience({
             video_n: this.exp_list[i]
           });
           console.log( this.exp_info );
