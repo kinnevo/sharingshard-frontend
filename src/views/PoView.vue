@@ -6,6 +6,7 @@ Validate to avoid reward more than the available records
 
 Create a cli call to update:
 
+  -- activate an experience and assign the amount of rewards
   -- available rewards for the experience
   -- rewards assigned to each PoV
   -- pay to each user the awarded rewards 
