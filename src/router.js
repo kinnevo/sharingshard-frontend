@@ -28,7 +28,7 @@ export default new Router({
       component: PoView
     },
     {
-      path: '/about/:video_id',
+      path: '/about',
       name: 'about',
       component: AboutView
     }
