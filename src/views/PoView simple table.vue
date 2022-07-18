@@ -179,7 +179,7 @@
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1656920990559-86772243239643";
+const CONTRACT_ID = "dev-1657705831666-13982695489359";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -296,7 +296,6 @@ const config = {
             console.log( "insertando ...... ")
             this.exp_info = await contract.set_pov({
                 video_n: 2, //video_id,
-                wallet: wallet.getAccountId(),
                 pov: this.ss_pov_moment
             });
             console.log("Comentario insertado");

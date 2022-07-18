@@ -20,7 +20,7 @@ Create a cli call to update:
     <v-col >
       <h1>Points of View</h1>
     </v-col>
-    <v-col md-12 class="text-xs-center">
+    <v-col xs12 class="text-xs-center" mt-3>
       <p>Participate in SharingShard with your ideas</p>
     </v-col>
   </v-container>
@@ -369,6 +369,10 @@ const config = {
         ss_pov_moment_time: 33,
         ss_pov_moment_award: 0,
 
+        gNear: {},
+        gWallet: {},
+        gContract: {},
+
         headers: [
           {
             text: 'Points of View',
@@ -437,36 +441,31 @@ const config = {
       },
 
       async insert_pov( video_id ){
+        /*
+          near = await connect(config);
+          wallet = WalletConnection(near, 'SharingShard');
 
-          const near = await connect(config);
-          const wallet = new WalletConnection(near, 'SharingShard');
-
-          const contract = new Contract(wallet.account(), CONTRACT_ID, {
+          contract = Contract(wallet.account(), CONTRACT_ID, {
               viewMethods: ['get_experience',
               'get_number_of_experiences', 
               'get_user_exp'],
               changeMethods:  ['set_pov'],
               sender: wallet.account()
           });
-
+        */
 
         console.log( "video id: " + video_id);
-        this.exp_info = await contract.get_experience({
+        this.exp_info = await this.gContract.get_experience({
           video_n: video_id
         });
-
-        alert ("help");
-
-        this.inserting_pov = this.exp_info;
-
         // alert ("hola: " + wallet.getAccountId() + this.exp_info.owner );
-        if ( wallet.getAccountId() == this.exp_info.owner ){
+        if ( this.gWallet.getAccountId() == this.exp_info.owner ){
           alert( "you, as an owner, are allowed to provide a Point of View");
         }
 
           console.log( "Experience: " + this.exp_info);
           console.log( this.exp_info.pov.length );
-          console.log( wallet.getAccountId());
+          console.log( this.gWallet.getAccountId());
 
           if ( Object.entries(this.exp_info.pov ).length == 0 )  // No hay ningun comentario
             console.log( "insertando first PoV...... ")
@@ -474,12 +473,12 @@ const config = {
             console.log( "insertando PoV...... ")
 
           this.ss_pov_moment_award = this.exp_info.reward;
-          this.exp_info = await contract.set_pov({
+          this.exp_info = await this.gContract.set_pov({
               video_n: video_id,
-              pov: this.ss_pov,
-              date: 10,
+              pov: this.ss_pov
           });
           console.log("Comentario insertado" + this.exp_info);
+          
       },
 
       async disp_experiences_for_pov( video_id ){
@@ -491,7 +490,11 @@ const config = {
           sender: wallet.account()
         });
 
-        this.exp_info = await contract.get_experience({
+        this.gNear = near;
+        this.gWallet = wallet;
+        this.gContract = contract;
+
+        this.exp_info = await this.gContract.get_experience({
           video_n: video_id
         });
 

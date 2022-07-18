@@ -23,7 +23,7 @@ experienciesview: [
             status: "En proceso",
          },
 
-near view dev-1656920990559-86772243239643 getNumber_of_experiences --accountId zavala55.testnet
+near view dev-1657705831666-13982695489359 getNumber_of_experiences --accountId zavala55.testnet
 
     </code>
     </div>
@@ -84,7 +84,7 @@ near view dev-1656920990559-86772243239643 getNumber_of_experiences --accountId 
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1656920990559-86772243239643";
+const CONTRACT_ID = "dev-1657705831666-13982695489359";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
