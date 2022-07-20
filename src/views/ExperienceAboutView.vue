@@ -119,7 +119,7 @@ const config = {
     methods: {
         async disp_experiences(){
           const near = await connect(config);
-          const wallet = new WalletConnection(near, 'ss');
+          const wallet = new WalletConnection(near, 'SharingShard');
 
           const contract = new Contract(wallet.account(), CONTRACT_ID, {
             viewMethods:  ['getNumber_of_experiences', 'getUser_exp','getExperience'],

@@ -483,7 +483,7 @@ const config = {
 
       async disp_experiences_for_pov( video_id ){
         const near = await connect(config);
-        const wallet = new WalletConnection(near, 'ss');
+        const wallet = new WalletConnection(near, 'SharingShard');
 
         const contract = new Contract(wallet.account(), CONTRACT_ID, {
           viewMethods:  ['get_number_of_experiences', 'get_user_exp','get_experience', 'set_pov'],

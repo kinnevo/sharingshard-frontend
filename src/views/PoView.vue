@@ -6,10 +6,24 @@ Validate to avoid reward more than the available records
 
 Create a cli call to update:
 
-  -- activate an experience and assign the amount of rewards
+  -- activate an experience and assign the amount of rewards  -- it is done in the experience page
   -- available rewards for the experience
   -- rewards assigned to each PoV
   -- pay to each user the awarded rewards 
+
+
+Mode of operations:
+
+  -- for all roles
+    show the status of the experience
+
+  -- a) as a owner of the experience
+    allows to assign the reward and close the experience
+      record who won the reward in the experience
+      when the experience is active shows the icon to assign the reward, otherwise the icon is not shown
+
+
+  -- b) as a visitor for the experience
 
 -->
 
@@ -26,11 +40,12 @@ Create a cli call to update:
   </v-container>
     
   <v-container fluid>
-      <v-row>
-        <b>Discover the value in this learning experience:</b> {{title}}
-        <p> ExperienceId {{exp_id}} </p>
-        <p> {{ exp_info }} </p>
-      </v-row>
+      <p>iAmOwner: {{iAmOwner}}</p>
+      <v-row><b>Discover the value in this learning experience:</b></v-row>
+      <v-row>ExperienceId: {{exp_id}}</v-row>
+      <v-row>Experience: {{ exp_info.title }}</v-row>
+      <v-row>Status: {{ exp_info.status}}</v-row>
+      <v-row>Experience: {{ exp_info}}</v-row>
 
       <v-row style="height: 500px;">
         <v-col md="6">
@@ -38,7 +53,7 @@ Create a cli call to update:
           <iframe
               width="100%"
               height="100%"
-              :src=url_experiencia
+              :src=exp_info.url
               frameborder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
@@ -49,7 +64,7 @@ Create a cli call to update:
           <v-container id="input-usage" >
             <v-row>
               Time: 
-              <v-text-field v-model="ss_pov_moment_time">
+              <v-text-field v-model="ss_pov_moment_time" readonly>
               Label="Introduce the timemark where you define the moment in the video"
               </v-text-field>
             </v-row>
@@ -63,12 +78,13 @@ Create a cli call to update:
                   label="Display the Moment for the Experience"
                   value=ss_moment
                   rows="5"
+                  readonly
                 ></v-textarea>
 
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if=!this.iAmOwner>
               <v-col
                 >
                 <v-textarea
@@ -96,7 +112,7 @@ Create a cli call to update:
     
       <v-row>
         <v-col md="6">
-          <p>URL del video:</p><span>{{url_experiencia}}</span> ---- {{ss_pov}} ---- is here
+          <p>URL del video:</p><span>{{exp_info.url}}</span>
 
         </v-col>
 
@@ -107,6 +123,8 @@ Create a cli call to update:
                 depressed
                 color="primary"
                 @click=clickea_insert_pov()
+                v-show=!iAmOwner
+
               >
                 Insert
               </v-btn>
@@ -117,7 +135,7 @@ Create a cli call to update:
                 depressed
                 color="primary"
                 @click=clickea_edit_pov()
-
+                v-show=future_feature
               >
                 Edit
               </v-btn>
@@ -128,6 +146,8 @@ Create a cli call to update:
                 depressed
                 color="primary"
                 @click=clickea_delete_pov()
+                v-show=future_feature
+
               >
                 Delete
               </v-btn>
@@ -152,7 +172,7 @@ Create a cli call to update:
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Rewards available for the best Point of View: {{ ss_pov_moment_award}} </v-toolbar-title>
+        <v-toolbar-title>Rewards available for the best Point of View: {{exp_info.reward}} </v-toolbar-title>
         <v-divider
           class="mx-4"
           inset
@@ -170,6 +190,7 @@ Create a cli call to update:
               class="mb-2"
               v-bind="attrs"
               v-on="on"
+              v-show=future_feature
             >
               New Point of View
             </v-btn>
@@ -242,6 +263,7 @@ Create a cli call to update:
         small
         class="mr-2"
         @click="editItem(item)"
+        v-show=iAmOwner
       >
         mdi-account-cash
       </v-icon>
@@ -327,6 +349,7 @@ const config = {
     name: "PoView",
 
     created(){
+//    updated(){
       // this.disp_pov();
       /*
       console.log("POV created: " + window.location.href);
@@ -339,7 +362,6 @@ const config = {
       this.exp_id = this.$route.params.video_id
       this.disp_experiences_for_pov( this.exp_id );
       this.display_PoV = true;
-
     },  
 
 
@@ -352,9 +374,11 @@ const config = {
         dialog: false,
         dialog_reward: false,
 
+        iAmOwner: false,
+        future_feature: false,
+
         poview: "",
-        title: "Video de pruebas",
-        url_experiencia: "https://youtube.com/embed/WCUGI8PGcGw",
+        title: "",
         time: 10,
         moment: "cadena de caracteres",
 
@@ -371,12 +395,12 @@ const config = {
 
         headers: [
           {
-            text: 'Points of View',
+            text: 'Points of View Number',
             align: 'start',
             sortable: false,
             value: 'name',
           },
-          { text: 'Owner', value: 'owner' },
+          { text: 'Participant', value: 'owner' },
           { text: 'Point of View', value: 'PoV' },
           { text: 'Reward', value: 'reward'},
           { text: 'Actions', value: 'actions', sortable: false },
@@ -455,12 +479,10 @@ const config = {
           video_n: video_id
         });
 
-        alert ("help");
-
         this.inserting_pov = this.exp_info;
 
         // alert ("hola: " + wallet.getAccountId() + this.exp_info.owner );
-        if ( wallet.getAccountId() == this.exp_info.owner ){
+        if ( this.iAmOwner ){
           alert( "you, as an owner, are allowed to provide a Point of View");
         }
 
@@ -484,7 +506,7 @@ const config = {
 
       async disp_experiences_for_pov( video_id ){
         const near = await connect(config);
-        const wallet = new WalletConnection(near, 'ss');
+        const wallet = new WalletConnection(near, 'SharingShard');
 
         const contract = new Contract(wallet.account(), CONTRACT_ID, {
           viewMethods:  ['get_number_of_experiences', 'get_user_exp','get_experience', 'set_pov'],
@@ -495,7 +517,12 @@ const config = {
           video_n: video_id
         });
 
-        this.url_experiencia = this.exp_info.url;
+          // alert( "this.exp_info.owner: " + this.exp_info.owner);
+          // alert( "accountId: " + wallet.getAccountId());
+
+        if ( wallet.getAccountId() == this.exp_info.owner )
+          this.iAmOwner = true;
+
 
   /*for ( const [key, value] of Object.entries(this.exp_info.pov )) {
     console.log (key, value);

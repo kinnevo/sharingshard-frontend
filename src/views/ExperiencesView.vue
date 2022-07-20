@@ -19,6 +19,7 @@
             <p> </p>
           </v-col>
           <v-col md-2>
+
             <!--------------------- New Experience Dialog ------------------------->
 
             <v-dialog
@@ -109,16 +110,81 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+
+            <!-- Activiate experience -->
+
+            <v-dialog
+              v-model="dialogActivation"
+              max-width="1000px"
+              >
+
+              <v-card>
+                <v-card-title class="text-h5 grey lighten-2">
+                    Activate the Experience and Deposit the Money for the Reward
+                </v-card-title>
+
+                <v-card-text>
+                    <v-row>
+                      <v-col>
+                        <v-text-field class="text-right"
+                          v-model="newExpActivation.rewards"
+                          label="Rewards"
+                          suffix="Nears"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col>
+                        <v-text-field class="text-right"
+                          v-model=feex
+                          label="Activation Fee"
+                          suffix="Nears"
+                          readonly
+                        ></v-text-field>
+                      </v-col>
+                      <v-col>
+                        <v-text-field class="text-right"
+                          v-model=totalx
+                          label="Total Amount"
+                          suffix="Nears"
+                          readonly
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="closeExpActivation"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="saveExpActivitation"
+                  >
+                    Activate
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+
           </v-col>
           </v-row>
         </v-container>
       </v-toolbar-title>
 
 
-      <v-row>
+      <v-row id=top_card>
+      <!--
         <v-col xs12 sm6 md4 lg3 v-for="item in experienciesview.length" :key="item">
-          <v-card text class="text-xs-center ma-3">
-            <v-responsive class="pt-3">
+      -->
+        <v-col cols="12" md="3" v-for="item in experienciesview.length" :key="item">
+          <v-card>
+            <v-responsive>
               <iframe
                   width="100%"
                   height="100%"
@@ -154,6 +220,19 @@
               <span class="">PoV</span>
             </v-btn>
           </v-card-actions>
+
+          <v-card-actions>
+            <div v-if="experienciesview[item-1].status=='Active'" class="red white--text mx-auto elevation-6 rounded-lg" ><b>Active</b></div>
+            <div v-if="experienciesview[item-1].status=='InProcess'" class="green white--text mx-auto elevation-6 rounded-lg" ><b>InProcess</b></div>
+            <div v-if="experienciesview[item-1].status=='Closed'" class="black white--text mx-auto elevation-6 rounded-lg" ><b>Closed</b></div>
+
+            <v-btn v-show="experienciesview[item-1].status=='InProcess'" text color="grey" @click="goToAction( experienciesview[item-1].video_n, 'InProcess' )">
+              <span class="">Activate</span>
+            </v-btn>
+
+
+          </v-card-actions>
+
         </v-card>
       </v-col>
 
@@ -172,7 +251,7 @@
 <script>
 import * as nearAPI from 'near-api-js'
 
-const { connect, WalletConnection, keyStores, Contract } = nearAPI;
+const { connect, WalletConnection, keyStores, Contract, utils } = nearAPI;
 
 const CONTRACT_ID = "dev-1657705831666-13982695489359";
 const config = {
@@ -184,6 +263,7 @@ const config = {
   explorerUrl: 'https://explorer.testnet.near.org'
 };
 
+
 export default {
   name: "ExperiencesView",
   /* https://learnvue.co/tutorials/vue-lifecycle-hooks-guide
@@ -193,6 +273,8 @@ export default {
   */
   created(){
     this.disp_experiences( "-1" ); // display de experiences of the current user
+    this.users_value = "My Experiences";
+
   },  
 
 /*
@@ -249,11 +331,85 @@ struct Experience{
 
       near_env: `${process.env.VUE_APP_NEAR_ENV}`,
 
+      newExpActivation: {
+          video_n: 0,
+          rewards: 0,
+          fee: 0,
+          total: 0,
+      },
+
+      dialogActivation: false,
+
     }
   },
+
+  computed: {
+
+      feex: function() {
+         return parseFloat(this.newExpActivation.rewards * 0.1).toFixed(2);
+      },
+
+      totalx: function() {
+        return (parseFloat(this.newExpActivation.rewards * 0.1 ) + parseFloat(this.newExpActivation.rewards)).toFixed(2);
+      }
+    },
+
   methods: {
 
+  
+    goToAction( exp_num, action){
+      this.newExpActivation.video_n = exp_num;
+      exp_num = action;
+      action = exp_num;
+      this.dialogActivation = true;
+    },
+
+    async saveExpActivitation(){
+
+      const near = await connect(config);
+      const wallet = new WalletConnection(near, 'SharingShard');
+
+      const contract = new Contract( wallet.account(), CONTRACT_ID, 
+      { 
+        changeMethods:  ['activate_experience'],
+        viewMethods: ['get_experience'],
+        sender: wallet.account(),
+      });
+
+      this.exp_info = await contract.get_experience({
+        video_n: this.newExpActivation.video_n // video_id
+      });
+
+      this.wRewards = this.exp_info.reward * 0.9
+      this.wEarning = this.exp_info.reward * 0.1
+
+//const amountInYocto = utils.format.parseNearAmount("10");
+
+      this.expInfo = await contract.activate_experience(
+        { 
+          video_n : this.newExpActivation.video_n,
+        }, 
+        300000000000000,
+        utils.format.parseNearAmount(this.totalx.toString()) )
+      .catch((err) => {
+        alert ( err );
+        return err;
+      });
+      this.dialogActivation = false;
+    },
+
+
+    closeExpActivation(){
+      this.dialogActivation = false;
+    },
+
     select_user(item) {
+      
+      const parent = document.querySelector('#top_card');
+      while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+      }
+
       this.users_value = item;
       this.disp_experiences(this.users_value);
     },
@@ -264,13 +420,14 @@ struct Experience{
     * -1 -- means current signed user
     */
     async disp_experiences( exp_owner ){
+      this.display_experiencies=false;
       const near = await connect(config);
       const wallet = new WalletConnection(near, 'SharingShard');
 
       if (wallet.isSignedIn()) {
         console.log("ExperienceView -- Signed");
 
-        if ( exp_owner == -1 )
+        if ( exp_owner == -1 ) 
           this.newExp.owner = wallet.getAccountId();
         else
           this.newExp.owner = exp_owner + "." + this.near_env;
@@ -285,29 +442,45 @@ struct Experience{
 
         // use a contract view method
         this.video_info = await contract.get_number_of_experiences();
-        console.log( this.video_info );
+        console.log( "get_number_of_experiences" + this.video_info );
 
         this.exp_list = await contract.get_user_exp({
           "wallet": this.newExp.owner
         });
         console.log( this.exp_list );
+        this.experienciesview = [""];
 
         for ( let i = 0 ; i < this.exp_list.length ; i++  ){
+          console.log( this.exp_list.length );
 
           this.exp_info = await contract.get_experience({
             video_n: this.exp_list[i]
           });
           console.log( this.exp_info );
-          this.experienciesview[i] = this.exp_info;
-          this.experienciesview[i].video_n = this.exp_list[i];
+
+/*
+ *  here we validate if the experiences are from the user and allow to closed or activate 
+ *  Eperiences from other users are only show the ones that are active
+ * 
+ *  Display my own experiences
+ */
+
+          // if ( this.exp_info.status == "Active") {
+            this.experienciesview[i] = this.exp_info;
+            this.experienciesview[i].video_n = this.exp_list[i];
+          // }
+
+/*
+ *  Display the active experiences from other users
+ */
+
         }
-        
         console.log( this.experienciesview );
-        this.display_experiencies = true;
       } else {
         //<p> please signin as an active user </p>
                 console.log("ExperienceView -- NOT SIGNED");
       }
+      this.display_experiencies=true;
     },
     goToMoment( video_id ){
       // in moment we use QUERY as a reference to pass information between the source page and the moment page
