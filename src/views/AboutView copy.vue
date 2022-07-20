@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1 class="subheading grey--text">Activate an experience</h1>
+    <h1 class="subheading grey--text">Modify the content of a Moment</h1>
     <p>
 
 <br>
@@ -8,14 +8,13 @@
     <v-container class="my-5">
 
       <p> ------  {{ statusT }}   ----- </p>
-      <p> Reward: {{ wRewards }} Earning: {{ wEarning }} --- total: {{ wRewards + wEarning }}</p>
 
       <v-btn class="pa-2"
         depressed
         color="primary"
-        @click=activateExperience
+        @click=addMoment
       >
-        Activate an experience and deposit the money for the reward
+        Insert a moment description
       </v-btn>
       
       <v-spacer></v-spacer>
@@ -29,7 +28,7 @@
 
 <script>
   import * as nearAPI from 'near-api-js'
-  const { connect, WalletConnection, keyStores, Contract, utils } = nearAPI;
+  const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
   const CONTRACT_ID = "dev-1657705831666-13982695489359";
   const config = {
@@ -49,52 +48,40 @@
 
     data(){
       return {
-        exp_info: "",
-        new_experience: false,
 
-        statusT: "inicial",
-        wRewards: 0,
-        wEarning: 0,
+      new_experience: false,
+      setMomment: {
+        video_n: 1,
+        comment: "Test1: We are looking for ... ",
+      },
+
+
+        statusT: "inicial"
       }
     },
 
     methods: {
-      async activateExperience(){
-
-        const video_n = 214
-
+      async addMoment(){
         const near = await connect(config);
         const wallet = new WalletConnection(near, 'SharingShard');
 
         const contract = new Contract( wallet.account(), CONTRACT_ID, 
         { 
-          changeMethods:  ['activate_experience'],
-          viewMethods: ['get_experience'],
+          changeMethods:  ['set_moment_comment'],
           sender: wallet.account(),
         });
 
-
-        this.exp_info = await contract.get_experience({
-          video_n: video_n // video_id
-        });
-
-        this.wRewards = this.exp_info.reward * 0.9
-        this.wEarning = this.exp_info.reward * 0.1
-
-//const amountInYocto = utils.format.parseNearAmount("10");
+// near call <CONTRACT OWNER WALLET> set_moment_comment --args '{"video_n": u128, "comment": "<MOMENT COMMENT>"}' --accountId <CALLER WALLET>
 
 
-        this.expInfo = await contract.activate_experience(
+
+        this.expInfo = await contract.set_moment_comment(
           { 
-            video_n : video_n,
+          video_n : this.setMomment.video_n,
+          comment: this.setMomment.comment
           }, 
           300000000000000,
-          utils.format.parseNearAmount("11")
-        )
-        .catch((err) => {
-          alert ( err );
-          return err;
-        }
+          0
         );
 
         this.statusT = "set_moment_comment result: " + this.expInfo;

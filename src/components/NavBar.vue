@@ -22,7 +22,7 @@
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores } = nearAPI;
 
-const CONTRACT_ID = "dev-1656920990559-86772243239643";
+const CONTRACT_ID = "dev-1657705831666-13982695489359";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -55,16 +55,16 @@ export default {
   methods: {
     async login_action() {
         const near = await connect(config);
-        const wallet = new WalletConnection(near);
+        const wallet = new WalletConnection(near, 'SharingShard');
 
         if (this.login_status == "Login") {
-                    wallet.requestSignIn( CONTRACT_ID, 'sharingshard');
+                    wallet.requestSignIn( CONTRACT_ID, 'SharingShard');
           this.user_logged = wallet.getAccountId();
           this.login_status = this.user_logged;  //"Logout"
           console.log( "Logout");
         }else {
           wallet.signOut();
-          this.login_status = "Login"
+          this.login_status = "Login";
           console.log( "Login " ); 
         }
     },
@@ -72,13 +72,13 @@ export default {
 //        const { connect, keyStores, WalletConnection } = nearAPI;
 
         const near = await connect(config);
-        const wallet = new WalletConnection(near);
+        const wallet = new WalletConnection(near, 'SharingShard');
 
         if (wallet.isSignedIn()) {
           this.user_logged = wallet.getAccountId();
-          this.login_status = this.user_logged
-//          this.login_status = "Logout"
-//          alert( "SignedIN:" + this.user_logged);
+          this.login_status = this.user_logged;
+        } else {
+          this.login_status = "Login";          
         }
     }
 

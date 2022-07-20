@@ -179,7 +179,7 @@
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1656920990559-86772243239643";
+const CONTRACT_ID = "dev-1657705831666-13982695489359";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -267,7 +267,7 @@ const config = {
 
       async insert_pov( video_id ){
           const near = await connect(config);
-          const wallet = new WalletConnection(near, 'ss');
+          const wallet = new WalletConnection(near, 'SharingShard');
 
           const contract = new Contract(wallet.account(), CONTRACT_ID, {
               viewMethods: ['get_experience'],
@@ -296,7 +296,6 @@ const config = {
             console.log( "insertando ...... ")
             this.exp_info = await contract.set_pov({
                 video_n: 2, //video_id,
-                wallet: wallet.getAccountId(),
                 pov: this.ss_pov_moment
             });
             console.log("Comentario insertado");
@@ -305,7 +304,7 @@ const config = {
 
       async disp_experiences_for_pov( video_id ){
         const near = await connect(config);
-        const wallet = new WalletConnection(near, 'ss');
+        const wallet = new WalletConnection(near, 'SharingShard');
 
         const contract = new Contract(wallet.account(), CONTRACT_ID, {
           viewMethods:  ['get_number_of_experiences', 'get_user_exp','get_experience'],

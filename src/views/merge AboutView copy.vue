@@ -21,7 +21,7 @@
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1656920990559-86772243239643";
+const CONTRACT_ID = "dev-1657705831666-13982695489359";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -56,7 +56,7 @@ const config = {
     methods: {
         async disp_experiences(){
           const near = await connect(config);
-          const wallet = new WalletConnection(near, 'ss');
+          const wallet = new WalletConnection(near, 'SharingShard');
 
           const contract = new Contract(wallet.account(), CONTRACT_ID, {
             viewMethods:  ['getNumber_of_experiences', 'getUser_exp','getExperience'],

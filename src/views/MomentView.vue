@@ -59,58 +59,60 @@
       </v-row>
     
       <v-row>
-        <v-col class="pa-6">
+        <v-col class="pa-6" >
           <p>URL del video:</p><span>{{url_experiencia}}</span> ---- {{ss_moment_moment}} ---- is here
 
         </v-col>
 
-        <v-col class="pa-6">  
-          <v-row>
-            <v-col>
-              <v-btn class="pa-2"
-                depressed
-                color="primary"
-                @click=clickea_insert_moment
-              >
-                Insert
-              </v-btn>
-            </v-col> 
+        <div v-if= edit_by_owner>
 
-            <v-col> 
-              <v-btn class="pa-2"
-                depressed
-                color="primary"
-                @click=clickea_edit_moment()
-              >
-                Edit
-              </v-btn>
-            </v-col>
+          <v-col class="pa-6">  
+            <v-row>
+              <v-col>
+                <v-btn class="pa-2"
+                  depressed
+                  color="primary"
+                  @click=clickea_insert_moment
+                >
+                  Insert
+                </v-btn>
+              </v-col> 
 
-            <v-col> 
-              <v-btn class="pa-2"
-                depressed
-                color="primary"
-                @click=clickea_delete_moment()
-              >
-                Delete
-              </v-btn>
-            </v-col> 
-          </v-row>
-        </v-col>
+              <v-col> 
+                <v-btn class="pa-2"
+                  depressed
+                  color="primary"
+                  @click=clickea_edit_moment()
+                >
+                  Edit
+                </v-btn>
+              </v-col>
+
+              <v-col> 
+                <v-btn class="pa-2"
+                  depressed
+                  color="primary"
+                  @click=clickea_delete_moment()
+                >
+                  Delete
+                </v-btn>
+              </v-col> 
+            </v-row>
+
+
+          </v-col>
+        </div>
       </v-row>
-</v-main>
+    </v-main>
 
   </div>
 </template>
 
 <script>
- 
-
-
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1656920990559-86772243239643";
+const CONTRACT_ID = "dev-1657705831666-13982695489359";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -139,8 +141,8 @@ const config = {
       this.owner = this.$route.query.owner,
       this.reward = this.$route.query.reward,
 
-      this.timss_moment_moment_timee = this.$route.query.time,
-      this.moment=this.$route.query.moment,
+      this.ss_moment_moment_time = this.$route.query.time,
+      this.ss_moment_moment=this.$route.query.moment,
 
       this.disp_experiences();
     },
@@ -152,9 +154,7 @@ const config = {
     data(){
       return {
         video_info: 0,
-        exp_list: [""],
         exp_info: "",
-        x_screen_data: [""],
 
         url: "",
         title: "",
@@ -166,6 +166,8 @@ const config = {
         ss_moment_moment_time: 0,
         ss_moment_moment: "",
 
+        edit_by_owner: false,
+
       }
     },
 
@@ -173,35 +175,45 @@ const config = {
       async disp_experiences(){
         
         const near = await connect(config);
-        const wallet = new WalletConnection(near, 'ss');
+        const wallet = new WalletConnection(near, 'SharingShard');
 
         const contract = new Contract(wallet.account(), CONTRACT_ID, {
-          viewMethods:  ['get_number_of_experiences', 'get_user_exp','get_experience'],
+          viewMethods:  ['get_experience'],
           sender: wallet.account()
         });
 
-        // use a contract view method
-        this.video_info = await contract.get_number_of_experiences();
-        console.log( this.video_info );
-
-        this.exp_list = await contract.get_user_exp({
-          "wallet": "zavala55.testnet"
+        this.exp_info = await contract.get_experience({
+          video_n: this.video_id
         });
-        console.log( this.exp_list );
+        if ( this.exp_info.owner == this.owner)
+          this.edit_by_owner = true;
 
-        for ( let i = 0 ; i < this.exp_list.length ; i++  ){
-
-          this.exp_info = await contract.get_experience({
-            video_n: this.exp_list[i]
-          });
-          console.log( this.exp_info );
-          this.x_screen_data[i] = this.exp_info;
-        }
+        console.log( this.exp_info );
         
-        console.log( this.x_screen_data );
-
       },
-      clickea_insert_moment(){
+      async clickea_insert_moment(){
+
+        const near = await connect(config);
+        const wallet = new WalletConnection(near, 'SharingShard');
+
+        const contract = new Contract( wallet.account(), CONTRACT_ID, 
+        { 
+          changeMethods:  ['set_moment_comment'],
+          sender: wallet.account(),
+        });
+
+        this.expInfo = await contract.set_moment_comment(
+          { 
+          video_n: this.video_id,
+          comment: this.ss_moment_moment
+          }, 
+          300000000000000,
+          0
+        );
+
+        this.statusT = "set_moment_comment result: " + this.expInfo;
+        console.log( this.expInfo );
+
         console.log( "clickea_insert_moment");
       },
       clickea_edit_moment(){
