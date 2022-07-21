@@ -13,7 +13,7 @@ import globalConstants from "./globalConstant"
 import * as nearAPI from 'near-api-js'
 const {keyStores} = nearAPI;
 
-Vue.prototype.$CONTRACT_ID = "dev-1657705831666-13982695489359";
+Vue.prototype.$CONTRACT_ID = "dev-1658426475128-11579451230587";
 Vue.prototype.$config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),

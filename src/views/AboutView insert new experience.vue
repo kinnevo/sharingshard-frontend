@@ -3,7 +3,7 @@
     <h1 class="subheading grey--text">Add a New Experience</h1>
     <p>
 
-near call dev-1657705831666-13982695489359 set_experience --args '{"wallet": "zavala55.testnet",  "experience_name": "Aprendizajes en el Silicon Valley", "description": "Narración de la Experiencia de Virgilio Raiden en su visita a SV", "url":"https://youtube.com/embed/WCUGI8PGcGw" , "reward": 10,  "moment": "This is a moment 1", "time":100,  "expire_date":20, "topic":2}' --accountId zavala55.testnet
+near call dev-1658426475128-11579451230587 set_experience --args '{"wallet": "zavala55.testnet",  "experience_name": "Aprendizajes en el Silicon Valley", "description": "Narración de la Experiencia de Virgilio Raiden en su visita a SV", "url":"https://youtube.com/embed/WCUGI8PGcGw" , "reward": 10,  "moment": "This is a moment 1", "time":100,  "expire_date":20, "topic":2}' --accountId zavala55.testnet
 <br>
 Add new experience (returns experience's code number):
 </p>
@@ -32,7 +32,7 @@ Add new experience (returns experience's code number):
   import * as nearAPI from 'near-api-js'
   const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-  const CONTRACT_ID = "dev-1657705831666-13982695489359";
+  const CONTRACT_ID = "dev-1658426475128-11579451230587";
   const config = {
     networkId: 'testnet',
     keyStore: new keyStores.BrowserLocalStorageKeyStore(),
