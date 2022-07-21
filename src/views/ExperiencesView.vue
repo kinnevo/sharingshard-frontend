@@ -111,7 +111,7 @@
               </v-card>
             </v-dialog>
 
-            <!-- Activiate experience -->
+            <!-- Activate experience -->
 
             <v-dialog
               v-model="dialogActivation"
@@ -128,7 +128,7 @@
                       <v-col>
                         <v-text-field class="text-right"
                           v-model="newExpActivation.rewards"
-                          label="Rewards"
+                          label="Deposit"
                           suffix="Nears"
                         ></v-text-field>
                       </v-col>
@@ -143,7 +143,7 @@
                       <v-col>
                         <v-text-field class="text-right"
                           v-model=totalx
-                          label="Total Amount"
+                          label="Rewards"
                           suffix="Nears"
                           readonly
                         ></v-text-field>
@@ -253,7 +253,7 @@ import * as nearAPI from 'near-api-js'
 
 const { connect, WalletConnection, keyStores, Contract, utils } = nearAPI;
 
-const CONTRACT_ID = "dev-1657705831666-13982695489359";
+const CONTRACT_ID = "dev-1658426475128-11579451230587";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -350,13 +350,12 @@ struct Experience{
       },
 
       totalx: function() {
-        return (parseFloat(this.newExpActivation.rewards * 0.1 ) + parseFloat(this.newExpActivation.rewards)).toFixed(2);
+        return (parseFloat(this.newExpActivation.rewards)-parseFloat(this.newExpActivation.rewards * 0.1 )).toFixed(2);
       }
     },
 
   methods: {
 
-  
     goToAction( exp_num, action){
       this.newExpActivation.video_n = exp_num;
       exp_num = action;
@@ -379,9 +378,6 @@ struct Experience{
       this.exp_info = await contract.get_experience({
         video_n: this.newExpActivation.video_n // video_id
       });
-
-      this.wRewards = this.exp_info.reward * 0.9
-      this.wEarning = this.exp_info.reward * 0.1
 
 //const amountInYocto = utils.format.parseNearAmount("10");
 

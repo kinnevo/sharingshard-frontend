@@ -3,7 +3,7 @@
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1657705831666-13982695489359";
+const CONTRACT_ID = "dev-1658426475128-11579451230587";
 const config = {
     testnet: {
         networkId: 'testnet',

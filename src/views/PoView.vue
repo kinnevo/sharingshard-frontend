@@ -298,9 +298,10 @@ Mode of operations:
 
         <v-card-text>
           <p>PoV: {{ editedIndex }} </p>
-          <p>Available Reward: {{ editedItem.reward }}</p>
-          <p>The award for this participation is: <v-text-field v-model="ss_pov_moment_award" reverse></v-text-field></p>
-          <p>Rewards available for assignment: {{ editedItem.reward  - ss_pov_moment_award }}</p>
+          <p>Reward: {{ editedItem.reward }}</p>
+          <p>Assigned to: {{ editedItem.owner }} </p>
+          <!--<p>The award for this participation is: <v-text-field v-model="ss_pov_moment_award" reverse></v-text-field></p>-->
+          <!--<p>Rewards available for assignment: {{ editedItem.reward  - ss_pov_moment_award }}</p>-->
         </v-card-text>
 
         <v-divider></v-divider>
@@ -310,7 +311,7 @@ Mode of operations:
           <v-btn
             color="primary"
             dark
-            @click="dialog_reward = false"
+            @click=payRewardAndClose()
           >
             Assign
           </v-btn>
@@ -334,7 +335,7 @@ Mode of operations:
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
-const CONTRACT_ID = "dev-1657705831666-13982695489359";
+const CONTRACT_ID = "dev-1658426475128-11579451230587";
 const config = {
   networkId: 'testnet',
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
@@ -572,8 +573,49 @@ const config = {
           this.close()
         },
 
+      async payRewardAndClose(){
+
+        const video_n = this.exp_id;
+        const participant = this.editedItem.owner;
+
+        alert( "Video: " + video_n + " Participant: " + participant);
+        const near = await connect(config);
+        const wallet = new WalletConnection(near, 'SharingShard');
+
+        const contract = new Contract( wallet.account(), CONTRACT_ID, 
+        { 
+          changeMethods:  ['pay_reward'],
+          viewMethods: ['get_experience'],
+          sender: wallet.account(),
+        });
 
 
-      },    // methods:
+        this.exp_info = await contract.get_experience({
+          video_n: video_n // video_id
+        });
+
+        this.expInfo = await contract.pay_reward(
+          { 
+            experience_number: video_n,
+            wallet: participant,
+          }, 
+          300000000000000,
+          0
+        )
+        .catch((err) => {
+          alert ( err );
+          return err;
+        }
+        );
+
+        this.statusT = "pay_reward result: " + this.expInfo;
+        console.log( this.expInfo );
+
+        this.statusT = await contract.get_experience({
+          video_n: video_n // video_id
+        });
+        this.dialog_reward = false;
+      },
+    },    // methods:
 }   // export
 </script>
