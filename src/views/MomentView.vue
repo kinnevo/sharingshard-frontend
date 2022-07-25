@@ -11,27 +11,28 @@
     </v-layout>
 
       <v-row>
-        Discover the value in this learning experience: {{title}}
+        Discover the value in this learning experience: {{exp_info.title}}
+        <p>{{exp_info}}</p>
       </v-row>
 
       <v-row  style="height: 500px;">
-        <v-col class="pa-8">
+        <v-col md="6">
                       
           <iframe
               width="100%"
               height="100%"
-              :src=url_experiencia
+              :src=exp_info.url
               frameborder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
           ></iframe>
         </v-col>
 
-        <v-col class="pa-4">
+        <v-col md="6">
         <v-container id="input-usage" >
           <v-row>
             Time: 
-            <v-text-field v-model="ss_moment_moment_time">
+            <v-text-field v-model="exp_info.time">
             Label="Introduce the timemark where you define the moment in the video"
             </v-text-field>
           </v-row>
@@ -43,11 +44,11 @@
               >
               <v-textarea
                 filled
-                v-model="ss_moment_moment"                         
+                v-model="exp_info.moment"
 
                 name="input-7-4"
                 label="Moment"
-                value=ss_moment_moment_time
+                value=exp_info.moment
                 auto-grow
                 rows="15"
                 row-height="15"
@@ -59,40 +60,44 @@
       </v-row>
     
       <v-row>
-        <v-col class="pa-6" >
-          <p>URL del video:</p><span>{{url_experiencia}}</span> ---- {{ss_moment_moment}} ---- is here
+        <v-col md-6 >
+          <p>URL del video:</p><span>{{this.exp_info.url}}</span> ---- {{exp_info.moment}} ---- is here
 
         </v-col>
 
-        <div v-if= edit_by_owner>
 
-          <v-col class="pa-6">  
-            <v-row>
-              <v-col>
-                <v-btn class="pa-2"
-                  depressed
-                  color="primary"
-                  @click=clickea_insert_moment
-                >
-                  Insert
-                </v-btn>
-              </v-col> 
-
-              <v-col> 
-                <v-btn class="pa-2"
+          <v-col md-6 yellow filled dark show-shatches=true color="black">
+            <v-row dark elevation=10 outlined>
+              <v-col md-4> 
+                <v-btn 
                   depressed
                   color="primary"
                   @click=clickea_edit_moment()
+                  v-show=future_feature
                 >
                   Edit
                 </v-btn>
               </v-col>
 
-              <v-col> 
-                <v-btn class="pa-2"
+              <v-col md-4>
+                <v-btn
+                  depressed
+                  color="primary"
+                  @click=clickea_insert_moment
+                  v-show=edit_by_owner
+                >
+                  Insert
+                </v-btn>
+              </v-col> 
+
+              <v-col md-4> 
+                <v-btn 
                   depressed
                   color="primary"
                   @click=clickea_delete_moment()
+                  Dark=true
+                  outlined
+                  v-show=future_feature
                 >
                   Delete
                 </v-btn>
@@ -101,7 +106,7 @@
 
 
           </v-col>
-        </div>
+        
       </v-row>
     </v-main>
 
@@ -126,25 +131,8 @@ const config = {
   export default {
     name: "MomentView",
     created(){
-      console.log("created: " + window.location.href);
-
-      //console.log("created2: " + this.$route.params.video_id);
-
-      this.video_id = this.$route.query.video_id;
-
-      this.url_experiencia = this.$route.query.url,
-            console.log( this.url_experiencia );
-
-      this.title = this.$route.query.title,
-      this.description = this.$route.query.description,
-      this.id = this.$route.query.id,
-      this.owner = this.$route.query.owner,
-      this.reward = this.$route.query.reward,
-
-      this.ss_moment_moment_time = this.$route.query.time,
-      this.ss_moment_moment=this.$route.query.moment,
-
-      this.disp_experiences();
+      this.exp_id = this.$route.params.video_id
+      this.disp_moment(this.exp_id );
     },
     updated(){
         console.log("updated: " + window.location.href);
@@ -156,23 +144,13 @@ const config = {
         video_info: 0,
         exp_info: "",
 
-        url: "",
-        title: "",
-        description: "",
-        id: 0,
-        owner: "",
-        reward: 0,
-
-        ss_moment_moment_time: 0,
-        ss_moment_moment: "",
-
         edit_by_owner: false,
-
+        future_feature: false,
       }
     },
 
     methods: {
-      async disp_experiences(){
+      async disp_moment(video_id){
         
         const near = await connect(config);
         const wallet = new WalletConnection(near, 'SharingShard');
@@ -183,9 +161,13 @@ const config = {
         });
 
         this.exp_info = await contract.get_experience({
-          video_n: this.video_id
+          video_n: video_id
         });
-        if ( this.exp_info.owner == this.owner)
+
+
+
+
+        if ( this.exp_info.owner == wallet.getAccountId() && this.exp_info.status == "InProcess" )
           this.edit_by_owner = true;
 
         console.log( this.exp_info );
@@ -196,16 +178,15 @@ const config = {
         const near = await connect(config);
         const wallet = new WalletConnection(near, 'SharingShard');
 
-        const contract = new Contract( wallet.account(), CONTRACT_ID, 
-        { 
+        const contract = new Contract( wallet.account(), CONTRACT_ID, { 
           changeMethods:  ['set_moment_comment'],
           sender: wallet.account(),
         });
 
         this.expInfo = await contract.set_moment_comment(
           { 
-          video_n: this.video_id,
-          comment: this.ss_moment_moment
+          video_n: this.exp_id,
+          comment: this.exp_info.moment
           }, 
           300000000000000,
           0
@@ -215,6 +196,11 @@ const config = {
         console.log( this.expInfo );
 
         console.log( "clickea_insert_moment");
+
+        this.$router.push({
+          name:'experiencesview', 
+        });
+
       },
       clickea_edit_moment(){
         console.log( "clickea_edit_moment");

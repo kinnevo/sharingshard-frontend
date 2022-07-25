@@ -30,6 +30,8 @@ Mode of operations:
 
 <template>
 <v-main fluid>
+
+
   <v-container>
     <v-col >
       <h1>Points of View</h1>
@@ -40,12 +42,10 @@ Mode of operations:
   </v-container>
     
   <v-container fluid>
-      <p>iAmOwner: {{iAmOwner}}</p>
       <v-row><b>Discover the value in this learning experience:</b></v-row>
-      <v-row>ExperienceId: {{exp_id}}</v-row>
-      <v-row>Experience: {{ exp_info.title }}</v-row>
+      <v-row>Experience Id: {{exp_id}}</v-row>
+      <v-row>Title: {{ exp_info.title }}</v-row>
       <v-row>Status: {{ exp_info.status}}</v-row>
-      <v-row>Experience: {{ exp_info}}</v-row>
 
       <v-row style="height: 500px;">
         <v-col md="6">
@@ -64,7 +64,7 @@ Mode of operations:
           <v-container id="input-usage" >
             <v-row>
               Time: 
-              <v-text-field v-model="ss_pov_moment_time" readonly>
+              <v-text-field v-model="exp_info.time" readonly>
               Label="Introduce the timemark where you define the moment in the video"
               </v-text-field>
             </v-row>
@@ -74,7 +74,7 @@ Mode of operations:
                 >
                 <v-textarea
                   filled
-                  v-model="ss_moment"                         
+                  v-model="exp_info.moment"                         
                   label="Display the Moment for the Experience"
                   value=ss_moment
                   rows="5"
@@ -118,6 +118,17 @@ Mode of operations:
 
         <v-col md="6">  
           <v-row justify="space-around">
+            <v-col md="2"> 
+              <v-btn
+                depressed
+                color="primary"
+                @click=clickea_edit_pov()
+                v-show=future_feature
+              >
+                Edit
+              </v-btn>
+            </v-col>
+
             <v-col md="2">
               <v-btn
                 depressed
@@ -130,16 +141,7 @@ Mode of operations:
               </v-btn>
             </v-col> 
 
-            <v-col md="2"> 
-              <v-btn
-                depressed
-                color="primary"
-                @click=clickea_edit_pov()
-                v-show=future_feature
-              >
-                Edit
-              </v-btn>
-            </v-col>
+
 
             <v-col md="2"> 
               <v-btn
@@ -158,8 +160,8 @@ Mode of operations:
 
   </v-container>
 <!----------------------------------------------->
-  <v-container fluid>
-    <div v-if=display_PoV>
+  <v-container fluid :key="componentKey">
+    <div>
       <h2>List Points of View</h2>
       <div>
   <v-data-table
@@ -335,6 +337,8 @@ Mode of operations:
 import * as nearAPI from 'near-api-js'
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
 
+
+
 const CONTRACT_ID = "dev-1658426475128-11579451230587";
 const config = {
   networkId: 'testnet',
@@ -345,11 +349,11 @@ const config = {
   explorerUrl: 'https://explorer.testnet.near.org'
 };
 
-
   export default {
     name: "PoView",
 
     created(){
+
 //    updated(){
       // this.disp_pov();
       /*
@@ -359,10 +363,9 @@ const config = {
       console.log( cual );
       console.log(this.$route.params.video_id);
       */
-      this.display_PoV = false;
       this.exp_id = this.$route.params.video_id
       this.disp_experiences_for_pov( this.exp_id );
-      this.display_PoV = true;
+      // this.display_PV = true;
     },  
 
 
@@ -430,6 +433,8 @@ const config = {
           PoV: "",
           reward: 0,
         },
+
+        componentKey: 0,
       }),
 
         computed: {
@@ -450,6 +455,11 @@ const config = {
       //}  // return
 //    },    // data
     methods: {
+
+      forceRerender() {
+        this.componentKey += 1;
+      },
+
       clickea_insert_pov(){
         console.log( "clickea_insert_pov -- Captura: " + this.ss_pov);
         this.insert_pov( this.exp_id );
@@ -529,8 +539,8 @@ const config = {
     console.log (key, value);
   }*/
 
-         let PoVitem = {};
-         const PoV_listing = [];
+          let PoVitem = {};
+          const PoV_listing = [];
          //this.PoV.pop();
           for ( let i = 0 ; i < Object.entries(this.exp_info.pov ).length ; i++  ){
             PoVitem = {};
@@ -543,7 +553,10 @@ const config = {
             PoV_listing.push( PoVitem);
           }
 
-         this.PoV = PoV_listing;
+          this.PoV = PoV_listing;
+
+          this.forceRerender();
+
         },
 
         close_reward () {
@@ -578,7 +591,7 @@ const config = {
         const video_n = this.exp_id;
         const participant = this.editedItem.owner;
 
-        alert( "Video: " + video_n + " Participant: " + participant);
+        //alert( "Video: " + video_n + " Participant: " + participant);
         const near = await connect(config);
         const wallet = new WalletConnection(near, 'SharingShard');
 

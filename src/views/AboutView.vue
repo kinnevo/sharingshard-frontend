@@ -161,12 +161,6 @@
       },
 
       async createUser(){
-        const prueba = false;
-
-        alert ("create user")
-
-        if (prueba)
-          return
 
         const near = await connect(config);
         const wallet = new WalletConnection(near, 'SharingShard');
@@ -180,7 +174,7 @@
 
         this.setUserStatus = await contract.set_user({
           name: this.userProfile.name, 
-          wallet: "zavala55.testnet", // wallet.getAccountId(),
+          wallet: wallet.getAccountId(),
           discord: this.userProfile.discord, 
           email: this.userProfile.email, 
           interests: 8,
