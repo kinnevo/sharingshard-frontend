@@ -4,6 +4,7 @@ node_modules
 .env
 .env.development.local
 .env.production.local
+0-notas
 
 
 # local env files

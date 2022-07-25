@@ -10,6 +10,7 @@
         <p>Fee for management: {{ss_fee}}%</p>
         <p>Amount of Rewards: {{ss_holdings}} Nears</p>
         <p>Profit: {{ss_earnings}} Nears</p>
+        <p><a :href="ss_explorer" target="_blank">Review transactions in Explorer</a></p>
 
     </v-container>
 </div>
@@ -43,11 +44,15 @@
         ss_users: [],
         ss_holdings: 0,
         ss_earnings: 0,
+        ss_explorer: "",
       }
     },
 
     created(){
         this.get_stats();
+        this.ss_explorer= config.explorerUrl + "/accounts/" + CONTRACT_ID;
+
+        
     },
 
     methods: {

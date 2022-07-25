@@ -10,6 +10,7 @@ const config = {
         keyStore: new keyStores.BrowserLocalStorageKeyStore(),
         nodeUrl: 'https://rpc.testnet.near.org',
         walletUrl: 'https://wallet.testnet.near.org',
+        creareWalletUrl: 'https://wallet.testnet.near.org/create',        
         helperUrl: 'https://helper.testnet.near.org',
         explorerUrl: 'https://explorer.testnet.near.org'
     },
@@ -19,6 +20,7 @@ const config = {
         keyStore: new keyStores.BrowserLocalStorageKeyStore(),
         nodeUrl: 'https://rpc.mainnet.near.org',
         walletUrl: 'https://wallet.near.org',
+        createWalletUrl: 'https://wallet.near.org/create',        
         helperUrl: 'https://helper.mainnet.near.org',
         explorerUrl: 'https://explorer.near.org'
     },

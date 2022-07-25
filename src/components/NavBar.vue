@@ -123,7 +123,7 @@ export default {
         { color: "blue", text: 'Moment', route: '/moment'},
         { color: "red", text: 'Points of View', route: '/pov'},
         { color: "orange", text: 'Statistics', route: '/stats'},        
-        { color: "brown", text: 'Test', route: '/about'},
+       /* { color: "brown", text: 'About', route: '/about'},*/
       ],
 
       createUserDialog: false,
@@ -172,11 +172,12 @@ export default {
 // who knows?
 
 
+
         } else {
           wallet.signOut();
           this.login_status = "Login";
           // console.log( "Login " ); 
-          //this.goToHome();
+          this.goToHome();
         }
     },
     async is_Logged() {
@@ -201,16 +202,23 @@ export default {
             this.userProfile.wallet = wallet.getAccountId();
             this.createUserDialog = true;
           }
-
+          this.goToExperiences();
 
         } else {
           this.login_status = "Login";
-          //this.goToHome();
+          this.goToHome();
         }
     },
     goToHome(){
-      this.$router.push('/'); 
+      if (this.$route.path !== "/") {
+        this.$router.push("/");
+      }
     },
+
+    goToExperiences(){
+      this.$router.push({ name:'experiencesview' }); 
+    },
+
 
     activateUserDialog(){
       this.createUserDialog = true;

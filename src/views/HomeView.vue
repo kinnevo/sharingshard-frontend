@@ -1,71 +1,185 @@
 <template>
-<div class="home">
+<div class="home" :key="home_refresh">
   <v-container>
-    <v-row no-gutters>
-      <v-col md="6">
-        hola
+    <v-row>
+      <v-col md="12">
+        <v-container class="my-5">
+          <h1>SharingShard</h1>
+          <h2 class="blue white--text">Monetize youy knowledge and experience<br>helping people to solve problems</h2>
+          <h3>Welcome</h3>
+          <h3>Register</h3>
+          <h3>Collaborate as an Experience Producer</h3>
+          <h3>Collaborate with your Points of View</h3>
+          <h3>Monetize your knowledge</h3>
+          <h3>Be part of our community of knowledge producers</h3>
+        </v-container>
       </v-col>
-      <v-col md="6">
-        bien
-      </v-col>
-    </v-row> 
-
-    <v-row no-gutters>
-      <v-col md="4">
-        hola
-      </v-col>
-      <v-col md="4">
-        bien
-      </v-col>
-        <v-col md="4">
-        tercera
-      </v-col>
-    </v-row> 
-
-    <v-row no-gutters>
-      <v-col class="pa-3">
-        hola
-      </v-col>
-      <v-col class="pa-3">
-        bien
-      </v-col>
-      <v-col class="pa-3">
-        tercera
-      </v-col>
-      <v-col class="pa-3">
-        cuarta
-      </v-col>
-    </v-row> 
+    </v-row>
   </v-container>
 
-  <v-row>
-    <v-col md="6">
-      <v-container class="my-5">
-        <h1>SharingShard</h1>
-        <h2>Welcome</h2>
-        <h2>Register</h2>
-        <h2>Collaborate as a Experience Producer</h2>
-        <h2>Collaborate with your Points of View</h2>
-        <h2>Monetize your knowledge</h2>
-        <h2>Be part of our community ok knowledge producers</h2>
-      </v-container>
-    </v-col>
-    <v-col md="6">
-    <p>User Logged: {{ user_logged }}</p>
-    <p>Login status: {{login_status}}</p>
+  <v-container>
+    <v-row>
+      <v-col md="12">
+      <p>User Logged: {{ user_logged }}</p>
+      <p>Login status: {{login_status}}</p>
 
-      <v-container v-if=!this.login_status_b>
-        <h2>Sign or create an account - No Logged</h2>
-      </v-container>
+        <v-container v-if=!this.login_status_b>
+          <p><a :href="nearWallet">Sign</a> or <a :href="createWallet">Create an account</a></p>
+        </v-container>
 
 
-      <v-container  v-if=this.login_status_b>
-        <h2>Logged</h2>
-      </v-container>
+        <v-container  v-if=this.login_status_b>
+          <h2>Logged</h2>
+        </v-container>
 
-    </v-col>
+      </v-col>
     </v-row>
+  </v-container>
+
+  <v-container>
+    <v-row md-12>
+      <v-col md-6>
+        <v-card
+          class="mx-auto my-12"
+          max-width="500"
+        >
+        <v-card-title>Be an experience producer</v-card-title>
+
+          <v-img
+                height="500"
+                src="../assets/600x600.png"
+          ></v-img>
+        </v-card>
+
+      </v-col>
+
+      <v-col md-6>
+        <v-card-text>
+          <v-row
+            align="start"
+            class="mx-0"
+          >
+            <div class="textBoxLeft">An experience is integrated by a video and a moment that is marked as point in time within the video, where you have a reference to the context that helps people to undersand the problem to be solved</div>
+            <div class="textBoxLeft">People provide points of view about the challenge shown at the moment</div>
+            <div class="textBoxLeft">Each moment has assigned a reward for the best Point of View that is allocated by the creator of the experience.</div>
+          </v-row>
+        </v-card-text>
+      </v-col>
+    </v-row>
+  </v-container>
+
+
+  <v-container>
+    <v-row md-12>
+      <v-col md-6>
+            <v-card-text>
+              <v-row
+                align="start"
+                class="mx-0"
+              >
+
+              <div class="textBoxLeft">An experience is integrated by a video and a moment that is marked as point in time within the video, where you have a reference to the context that helps people to undersand the problem to be solved</div>
+              <div class="textBoxLeft">People provide points of view about the challenge shown at the moment</div>
+              <div class="textBoxLeft">Each moment has assigned a reward for the best Point of View that is allocated by the creator of the experience.</div>
+              </v-row>
+            </v-card-text>
+
+      </v-col>
+
+      <v-col md-6>
+        <v-card
+          class="mx-auto my-12"
+          max-width="500"
+        >
+        <v-card-title>Collaborate with your Points of View</v-card-title>
+
+          <v-img
+                height="500"
+                src="../assets/600x600.png"
+          ></v-img>
+        </v-card>
+
+      </v-col>
+
+
+    </v-row>
+  </v-container>
+
+
+
+  <v-container>
+    <v-row md-12>
+      <v-col md-6>
+        <v-card
+          class="mx-auto my-12"
+          max-width="500"
+        >
+        <v-card-title>Monetize your knowledge</v-card-title>
+
+          <v-img
+                height="500"
+                src="../assets/600x600.png"
+          ></v-img>
+        </v-card>
+
+      </v-col>
+
+      <v-col md-6>
+        <v-card-text>
+          <v-row
+            align="start"
+            class="mx-0"
+          >
+            <div class="textBoxLeft">TRESTRES An experience is integrated by a video and a moment that is marked as point in time within the video, where you have a reference to the context that helps people to undersand the problem to be solved</div>
+            <div class="textBoxLeft">People provide points of view about the challenge shown at the moment</div>
+            <div class="textBoxLeft">Each moment has assigned a reward for the best Point of View that is allocated by the creator of the experience.</div>
+          </v-row>
+        </v-card-text>
+      </v-col>
+    </v-row>
+  </v-container>
+
+
+  <v-container>
+    <v-row md-12>
+      <v-col md-6>
+            <v-card-text>
+              <v-row
+                align="start"
+                class="mx-0"
+              >
+
+              <div class="textBoxLeft">An experience is integrated by a video and a moment that is marked as point in time within the video, where you have a reference to the context that helps people to undersand the problem to be solved</div>
+              <div class="textBoxLeft">People provide points of view about the challenge shown at the moment</div>
+              <div class="textBoxLeft">Each moment has assigned a reward for the best Point of View that is allocated by the creator of the experience.</div>
+              </v-row>
+            </v-card-text>
+
+      </v-col>
+
+      <v-col md-6>
+        <v-card
+          class="mx-auto my-12"
+          max-width="500"
+        >
+        <v-card-title>Be part of our community</v-card-title>
+
+          <v-img
+                height="500"
+                src="../assets/600x600.png"
+          ></v-img>
+        </v-card>
+
+      </v-col>
+
+
+    </v-row>
+  </v-container>
+
+
+
 </div>
+
 </template>
 
 
@@ -80,6 +194,7 @@ const config = {
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
   nodeUrl: 'https://rpc.testnet.near.org',
   walletUrl: 'https://wallet.testnet.near.org',
+  createWalletUrl: 'https://wallet.testnet.near.org/create',
   helperUrl: 'https://helper.testnet.near.org',
   explorerUrl: 'https://explorer.testnet.near.org'
 };
@@ -93,14 +208,26 @@ export default {
       user_logged: "none",
       login_status: "Logut",
       login_status_b: false,
+
+      createWallet: "",
+      nearWallet: "",
+
+      home_refresh: 0,
     }
   },
 
   created(){
+    this.nearWallet = config.walletUrl;
+    this.createWallet = config.createWalletUrl;
     this.is_Logged();
   },
 
   methods: {
+
+   forceRerender() {
+      this.home_refresh += 1;
+    },
+
     async is_Logged() {
 
         const near = await connect(config);
@@ -125,3 +252,8 @@ export default {
 
 
 </script>
+<style>
+  .textBoxLeft {
+    text-align:left;
+  }
+</style>
