@@ -1,7 +1,6 @@
 .DS_Store
 node_modules
 /dist
-.env
 .env.development.local
 .env.production.local
 0-notas
