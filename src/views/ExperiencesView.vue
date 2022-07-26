@@ -189,6 +189,17 @@
       -->
         <v-col cols="12" md="3" v-for="item in experienciesview.length" :key="item">
           <v-card>
+
+        <LazyYoutube
+          ref="youtubeLazyVideo"
+          max-width="720px"
+          aspect-ratio="16:9"
+          thumbnail-quality="standard"
+          :src=experienciesview[item-1].url
+        />
+
+
+          <!--
             <v-responsive>
               <iframe
                   width="100%"
@@ -199,7 +210,7 @@
                   allowfullscreen
               ></iframe>
             </v-responsive>
-
+          -->
           <v-card-text>
             <div v-if=!hide_it class="subheading text-sm-left">Video: {{ experienciesview[item-1].video_n }}</div>
             <div class="subheading text-sm-left">{{ experienciesview[item-1].title }}</div>

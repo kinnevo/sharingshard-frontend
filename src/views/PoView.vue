@@ -49,16 +49,33 @@ Mode of operations:
 
       <v-row style="height: 500px;">
         <v-col md="6">
-                      
-          <iframe
-              width="100%"
-              height="100%"
-              :src=exp_info.url
-              frameborder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-          ></iframe>
+                   {{urlWithTime}}   
+          <LazyYoutube
+            ref="youtubeLazyVideo"
+            max-width="720px"
+            aspect-ratio="16:9"
+            thumbnail-quality="standard"
+            :src=urlWithTime
+          />
+
+
+    <div class="buttons">
+      <v-btn @click="handleClick('playVideo', 'youtubeLazyVideo')">
+        Play
+      </v-btn>
+      <v-btn @click="handleClick('pauseVideo', 'youtubeLazyVideo')">
+        Pause
+      </v-btn>
+      <v-btn @click="handleClick('stopVideo', 'youtubeLazyVideo')">
+        Stop
+      </v-btn>
+      <v-btn @click="handleClick('resetView', 'youtubeLazyVideo')">
+        Reset
+      </v-btn>
+    </div>
+
         </v-col>
+
 
         <v-col md="6">
           <v-container id="input-usage" >
@@ -112,7 +129,7 @@ Mode of operations:
     
       <v-row>
         <v-col md="6">
-          <p>URL del video:</p><span>{{exp_info.url}}</span>
+          <p>URL del video:</p><span>{{urlWithTime}}</span>
 
         </v-col>
 
@@ -357,6 +374,10 @@ const config = {
 //    updated(){
       // this.disp_pov();
       /*
+
+      start and stop the video
+      https://support.gospacecraft.com/hc/en-us/articles/204744184-Set-Specific-Start-and-End-Times-for-Your-Video
+
       console.log("POV created: " + window.location.href);
       console.log(this.$route.params);
       const cual = this.$route.params.video_id;
@@ -366,7 +387,28 @@ const config = {
       this.exp_id = this.$route.params.video_id
       this.disp_experiences_for_pov( this.exp_id );
       // this.display_PV = true;
-    },  
+    },
+
+    computed: {
+      urlWithTime: function(){
+        // return this.exp_info.url + "?start=" + parseInt(this.exp_info.time) + "&end=" + parseInt(this.exp_info.time)+60;
+        return this.exp_info.url + "?t=" + this.exp_info.time;
+
+    },
+
+      formTitle () {
+        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
+    },
+
+    watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialog_reward (val) {
+        val || this.close()
+      },
+    },
 
 
     data:() => ({
@@ -437,24 +479,11 @@ const config = {
         componentKey: 0,
       }),
 
-        computed: {
-          formTitle () {
-            return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-          },
-        },
-
-        watch: {
-          dialog (val) {
-            val || this.close()
-          },
-          dialog_reward (val) {
-            val || this.close()
-          },
-        },
-
-      //}  // return
-//    },    // data
     methods: {
+
+      handleClick(event, ref) {
+          this.$refs[ref][event]();
+      },
 
       forceRerender() {
         this.componentKey += 1;
