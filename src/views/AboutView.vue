@@ -104,6 +104,70 @@
         </v-card>
       </v-dialog>
 
+          <v-card>
+            <v-responsive>
+              <iframe
+                  src="https://youtube.com/embed/WCUGI8PGcGw"
+
+                  frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+              ></iframe>
+              <p>otro video</p>
+
+    <LazyYoutube
+      ref="youtubeLazyVideo"
+      max-width="720px"
+      aspect-ratio="16:9"
+      thumbnail-quality="standard"
+      src="https://www.youtube.com/watch?v=TcMBFSGVi1c" 
+    />
+
+    <div class="buttons">
+      <v-btn @click="handleClick('playVideo', 'youtubeLazyVideo')">
+        Play
+      </v-btn>
+      <v-btn @click="handleClick('pauseVideo', 'youtubeLazyVideo')">
+        Pause
+      </v-btn>
+      <v-btn @click="handleClick('stopVideo', 'youtubeLazyVideo')">
+        Stop
+      </v-btn>
+      <v-btn @click="handleClick('resetView', 'youtubeLazyVideo')">
+        Reset
+      </v-btn>
+    </div>
+
+<!--  https://vuejsexamples.com/embed-a-youtube-player-easily-and-lazy-load-the-video-with-vue/  
+      https://github.com/seeratawan01/vue-lazytube -->
+
+    <LazyYoutube
+      ref="youtubeLazyVideo"
+      max-width="720px"
+      aspect-ratio="16:9"
+      thumbnail-quality="standard"
+      src="https://youtu.be/WCUGI8PGcGw" 
+    />
+
+    <div class="buttons">
+      <v-btn @click="handleClick('playVideo', 'youtubeLazyVideo')">
+        Play
+      </v-btn>
+      <v-btn @click="handleClick('pauseVideo', 'youtubeLazyVideo')">
+        Pause
+      </v-btn>
+      <v-btn @click="handleClick('stopVideo', 'youtubeLazyVideo')">
+        Stop
+      </v-btn>
+      <v-btn @click="handleClick('resetView', 'youtubeLazyVideo')">
+        Reset
+      </v-btn>
+    </div>
+
+
+
+            </v-responsive>
+        </v-card>
 
 
   </v-container>
@@ -152,6 +216,10 @@
 
     methods: {
 
+      handleClick(event, ref) {
+          this.$refs[ref][event]();
+      },
+
       activateUserDialog(){
         this.createUserDialog = true;
       },
@@ -191,3 +259,15 @@
     },
   }
 </script>
+
+<style>
+.buttons00 {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+
+}
+</style>

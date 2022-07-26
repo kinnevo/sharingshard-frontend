@@ -7,6 +7,11 @@ import router from './router'
 
 global.Buffer = global.Buffer || require("buffer").Buffer;
 
+import LazyTube from "vue-lazytube";
+
+Vue.use(LazyTube);
+
+
 // global variable
 
 /*

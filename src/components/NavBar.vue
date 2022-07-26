@@ -123,7 +123,7 @@ export default {
         { color: "blue", text: 'Moment', route: '/moment'},
         { color: "red", text: 'Points of View', route: '/pov'},
         { color: "orange", text: 'Statistics', route: '/stats'},        
-       /* { color: "brown", text: 'About', route: '/about'},*/
+        { color: "brown", text: 'About', route: '/about'},
       ],
 
       createUserDialog: false,

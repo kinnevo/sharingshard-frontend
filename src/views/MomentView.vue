@@ -17,7 +17,32 @@
 
       <v-row  style="height: 500px;">
         <v-col md="6">
-                      
+{{urlWithTime}}
+    <LazyYoutube
+      ref="youtubeLazyVideo"
+      max-width="720px"
+      aspect-ratio="16:9"
+      thumbnail-quality="standard"
+      :src=urlWithTime
+    />
+
+    <div class="buttons">
+      <v-btn @click="handleClick('playVideo', 'youtubeLazyVideo')">
+        Play
+      </v-btn>
+      <v-btn @click="handleClick('pauseVideo', 'youtubeLazyVideo')">
+        Pause
+      </v-btn>
+      <v-btn @click="handleClick('stopVideo', 'youtubeLazyVideo')">
+        Stop
+      </v-btn>
+      <v-btn @click="handleClick('resetView', 'youtubeLazyVideo')">
+        Reset
+      </v-btn>
+    </div>
+
+
+<!--
           <iframe
               width="100%"
               height="100%"
@@ -26,13 +51,14 @@
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
           ></iframe>
+-->          
         </v-col>
 
         <v-col md="6">
         <v-container id="input-usage" >
           <v-row>
             Time: 
-            <v-text-field v-model="exp_info.time">
+            <v-text-field  suffix="seconds" v-model="exp_info.time">
             Label="Introduce the timemark where you define the moment in the video"
             </v-text-field>
           </v-row>
@@ -61,7 +87,8 @@
     
       <v-row>
         <v-col md-6 >
-          <p>URL del video:</p><span>{{this.exp_info.url}}</span> ---- {{exp_info.moment}} ---- is here
+          <p>URL del video:</p><span>{{this.urlWithTime}}</span>
+
 
         </v-col>
 
@@ -138,6 +165,12 @@ const config = {
         console.log("updated: " + window.location.href);
     },
 
+    computed: {
+      urlWithTime: function(){
+        return this.exp_info.url + "?t=" + this.exp_info.time;
+      }
+    },
+
 
     data(){
       return {
@@ -150,6 +183,11 @@ const config = {
     },
 
     methods: {
+      handleClick(event, ref) {
+          this.$refs[ref][event]();
+      },
+
+
       async disp_moment(video_id){
         
         const near = await connect(config);
