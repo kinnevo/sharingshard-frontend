@@ -98,6 +98,8 @@
 
 <script>
 import * as nearAPI from 'near-api-js'
+import { useUserStore } from '../stores/userstore'
+
 const { connect, WalletConnection, keyStores, Contract} = nearAPI;
 
 const CONTRACT_ID = "dev-1658426475128-11579451230587";
@@ -115,12 +117,15 @@ export default {
     name: 'NavBar',
   data() {
     return {
+
+      userG: useUserStore(),
+
       drawer: false,
       login_status: "Logout",
       user_logged: "",
       commands: [
         { color: "green", text: 'Experiences', route: '/experiences'},
-        { color: "blue", text: 'Moment', route: '/moment'},
+/*        { color: "blue", text: 'Moment', route: '/moment'}, */
         { color: "red", text: 'Points of View', route: '/pov'},
         { color: "orange", text: 'Statistics', route: '/stats'},        
         { color: "brown", text: 'About', route: '/about'},
@@ -145,7 +150,7 @@ export default {
 
   methods: {
     async login_action() {
-
+//alert( "we are in login action")
         const near = await connect(config);
         const wallet = new WalletConnection(near, 'SharingShard');
 
@@ -156,31 +161,37 @@ export default {
           // console.log( "Logout");
 
           
-// this is needed?
+// this is needed when is a new user for SharingShard
           const contract = new Contract( wallet.account(), CONTRACT_ID, 
           { 
             viewMethods: ['user_exist'],
             sender: wallet.account(),
           });
-
+//alert( "// this is needed?")
           const userExist = contract.user_exist({
             wallet: this.user_logged,
           })
 
-          if ( !userExist )
+          if ( !userExist ) {
+//            alert ("create new user")
             this.createUserDialog = true;
-// who knows?
+          }
 
-
+//          alert( "after creater a user" + this.user_logged)
+          this.userG.setCurrentUser(this.user_logged);
 
         } else {
+//          alert ( "signout")
           wallet.signOut();
           this.login_status = "Login";
+          this.userG.setCurrentUser("");
+
           // console.log( "Login " ); 
           this.goToHome();
         }
     },
     async is_Logged() {
+//      alert("is_logged")
         const near = await connect(config);
         const wallet = new WalletConnection(near, 'SharingShard');
 
@@ -202,10 +213,16 @@ export default {
             this.userProfile.wallet = wallet.getAccountId();
             this.createUserDialog = true;
           }
+          this.userG.setCurrentUser(wallet.getAccountId());
+//          alert( "User: " + wallet.getAccountId());
+
           this.goToExperiences();
 
         } else {
           this.login_status = "Login";
+          this.userG.setCurrentUser("");
+//          alert( "No logged")
+
           this.goToHome();
         }
     },

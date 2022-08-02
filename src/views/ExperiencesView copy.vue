@@ -12,8 +12,7 @@
       <v-col md-3>You are: {{ users_value }}</v-col>
       <v-col md-3> Experience List: {{ exp_list }} -- exp_list: {{ exp_list.length }} -- {{experienciesview.length}}  </v-col>
       <v-col md-3> near_env: {{ near_env }} </v-col>
-      <v-col md-3> s1: {{select_user_f}} </v-col>
-      <v-col md-3> s2: {{userG.getCurrentUser()}} </v-col>
+      <v-col md-3> {{select_user_f}} </v-col>
       </v-row>
 
           <v-row>
@@ -576,8 +575,8 @@ struct Experience{
       },
 
       select_user_f(){
-        return this.userG.currentUser;
-        //  return this.userG.getCurrentUser();
+        //return this.userG.currentUser;
+          return this.userG.getCurrentUser();
       }
     },
 
@@ -658,6 +657,7 @@ struct Experience{
       this.visit_num +=1;
 
       this.userG.setCurrentUser(this.users_value);
+      // store.state.select_user = this.users_value;
 
     },
 
@@ -673,8 +673,12 @@ struct Experience{
       if (wallet.isSignedIn()) {
         console.log("ExperienceView -- Signed");
 
-        if ( this.userG.getCurrentUser() != "" )
-          this.newExp.owner = this.userG.getCurrentUser();
+        // check the new approach
+        this.newExp.owner = exp_owner;
+
+/*
+        if ( store.state.select_user != "" )
+          this.newExp.owner = store.state.select_user;
         else {
           if ( exp_owner == -1 ) {
             this.newExp.owner = wallet.getAccountId();
@@ -683,6 +687,7 @@ struct Experience{
             this.newExp.owner = exp_owner;
           }
         }
+*/
 
         console.log( "These are the experiences of the user: " + this.newExp.owner )
 
@@ -767,7 +772,7 @@ struct Experience{
         } );
       */
 
-      this.userG.setCurrentExperience( video_id);
+     // store.state.last_experience = video_id;
 
       this.momentDialog = true;     
       const near = await connect(config);

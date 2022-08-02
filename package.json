@@ -10,12 +10,12 @@
   "dependencies": {
     "@mdi/font": "^6.7.96",
     "core-js": "^3.8.3",
+    "lodash.uniqueid": "^4.0.1",
     "near-api-js": "^0.45.1",
     "vue": "^2.7.4",
     "vue-lazytube": "^1.1.1",
     "vue-router": "^3.5.4",
-    "vuetify": "^2.6.0",
-    "vuex": "^3.6.2"
+    "vuetify": "^2.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

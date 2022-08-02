@@ -16,19 +16,31 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
 import NavBar from './components/NavBar'
 
-export default {
+import { defineComponent } from 'vue'
+import { useUserStore } from './stores/userstore'
+
+export default defineComponent({
+//export default {
   name: 'App',
   components: { 
     NavBar,
   },
 
+setup() {
+    const userG = useUserStore()
+
+    return{
+      userG,
+    }
+  },
+
+
   data: () => ({
     //
   })
-}
+});
 </script>
 
 

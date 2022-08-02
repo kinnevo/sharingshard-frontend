@@ -33,19 +33,73 @@ Mode of operations:
 
 
   <v-container>
-    <v-col >
       <h1>Points of View</h1>
-    </v-col>
-    <v-col md-12 class="text-xs-center">
       <p>Participate in SharingShard with your ideas</p>
-    </v-col>
+      <p>window width: {{ window.width }} window height: {{ window.height }}</p>
   </v-container>
     
   <v-container fluid>
-      <v-row><b>Discover the value in this learning experience:</b></v-row>
-      <v-row>Experience Id: {{exp_id}}</v-row>
-      <v-row>Title: {{ exp_info.title }}</v-row>
-      <v-row>Status: {{ exp_info.status}}</v-row>
+
+    <v-row>
+      <v-col md-6>
+        <v-row><b>Discover the value in this learning experience:</b></v-row>
+        <v-row>Experience Id: {{exp_id}}</v-row>
+        <v-row>Title: {{ exp_info.title }}</v-row>
+        <v-row>Status: {{ exp_info.status}}</v-row>
+        <v-row>Owner: {{ exp_info.owner}}</v-row>
+      </v-col>
+
+      <v-divider
+        class="mx-4"
+        inset
+        vertical
+      ></v-divider>
+
+
+    
+      <v-col md="6">  
+        <v-row justify="space-around">
+          <v-col md="2"> 
+            <v-btn
+              depressed
+              color="primary"
+              @click=clickea_edit_pov()
+              v-show=future_feature
+            >
+              Edit
+            </v-btn>
+          </v-col>
+
+          <v-col md="2">
+            <v-btn
+              depressed
+              color="primary"
+              @click=clickea_insert_pov()
+              v-show=!iAmOwner
+
+            >
+              Insert a new Point of View
+            </v-btn>
+          </v-col> 
+
+          <v-col md="2"> 
+            <v-btn
+              depressed
+              color="primary"
+              @click=clickea_delete_pov()
+              v-show=future_feature
+
+            >
+              Delete
+            </v-btn>
+          </v-col> 
+        </v-row>
+      </v-col>
+    </v-row>
+      
+
+
+
 
       <v-row style="height: 500px;">
         <v-col md="6">
@@ -57,6 +111,17 @@ Mode of operations:
             thumbnail-quality="standard"
             :src=urlWithTime
           />
+<!--
+            kkkk
+            <template #button>
+              <v-img src="../assets/600x600.png"></v-img>
+            </template>
+
+            <template #loader>
+              mmmmmmmm
+            </template>
+          </LazyYoutube>
+-->          
 
 
     <div class="buttons">
@@ -106,7 +171,7 @@ Mode of operations:
                 >
                 <v-textarea
                   filled
-                  v-model="ss_pov"                         
+                  v-model="ss_pov"
                   name="input-7-4"
                   label="Create a Point of View about this challenge"
                   value=ss_pov
@@ -122,60 +187,6 @@ Mode of operations:
       
   </v-container>
 
-  <v-divider class="my-8"></v-divider>
-
-  <v-spacer class="my-8" />
-  <v-container>
-    
-      <v-row>
-        <v-col md="6">
-          <p>URL del video:</p><span>{{urlWithTime}}</span>
-
-        </v-col>
-
-        <v-col md="6">  
-          <v-row justify="space-around">
-            <v-col md="2"> 
-              <v-btn
-                depressed
-                color="primary"
-                @click=clickea_edit_pov()
-                v-show=future_feature
-              >
-                Edit
-              </v-btn>
-            </v-col>
-
-            <v-col md="2">
-              <v-btn
-                depressed
-                color="primary"
-                @click=clickea_insert_pov()
-                v-show=!iAmOwner
-
-              >
-                Insert
-              </v-btn>
-            </v-col> 
-
-
-
-            <v-col md="2"> 
-              <v-btn
-                depressed
-                color="primary"
-                @click=clickea_delete_pov()
-                v-show=future_feature
-
-              >
-                Delete
-              </v-btn>
-            </v-col> 
-          </v-row>
-        </v-col>
-      </v-row>
-
-  </v-container>
 <!----------------------------------------------->
   <v-container fluid :key="componentKey">
     <div>
@@ -191,13 +202,16 @@ Mode of operations:
       <v-toolbar
         flat
       >
-        <v-toolbar-title>Rewards available for the best Point of View: {{exp_info.reward}} </v-toolbar-title>
+        <v-toolbar-title v-if="exp_info.winner==''">Rewards available for the best Point of View: {{exp_info.reward}} </v-toolbar-title>
+        <v-toolbar-title v-else>{{exp_info.reward}} Nears Rewards was assigned to: {{exp_info.winner}}  </v-toolbar-title>        
         <v-divider
           class="mx-4"
           inset
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
+
+
         <v-dialog
           v-model="dialog"
           max-width="500px"
@@ -275,6 +289,76 @@ Mode of operations:
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+
+        <!--------------------- wait Dialog ------------------------->
+
+        <v-dialog
+          v-model="waitDialog"
+          max-width="1500px"
+          no-click-animation
+          persistent
+          close-delay=500
+          overlay-color="red"
+          >
+
+          <v-card>
+            <v-card-title class="text-h5 orange black--text lighten-2">
+              Accesing the Blockchanin
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <br>
+                <p class="textBoxLeft">We are hard-working visiting the blockchain, please be patient while we do the request that you ask.</p>
+                {{error_message}}
+                <br>
+              </v-container>
+            </v-card-text>
+
+          </v-card>
+        </v-dialog>
+
+        <!--------------------- Error Message Dialog ------------------------->
+
+      <v-dialog
+        v-model="errorMsgDialog"
+        >
+        <v-card>
+          <v-card-title class="text-h5 red lighten-2">
+              Error while accesing the blockchain
+          </v-card-title>
+
+          <v-card-text>
+            <v-container>
+
+              <v-row>
+                  <v-text-field
+                    v-model="error_message"
+                    readonly
+                  ></v-text-field>
+              </v-row>
+
+            </v-container>
+
+            <v-card-actions>
+                <v-btn
+                color="blue darken-1"
+                text
+                @click="closeError"
+                >
+                Ok
+                </v-btn>
+            </v-card-actions>
+
+          </v-card-text>
+
+        </v-card>
+      </v-dialog>
+
+
+
+
       </v-toolbar>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
@@ -350,11 +434,9 @@ Mode of operations:
 </template>
     
 <script>
-
 import * as nearAPI from 'near-api-js'
+
 const { connect, WalletConnection, keyStores, Contract } = nearAPI;
-
-
 
 const CONTRACT_ID = "dev-1658426475128-11579451230587";
 const config = {
@@ -387,7 +469,15 @@ const config = {
       this.exp_id = this.$route.params.video_id
       this.disp_experiences_for_pov( this.exp_id );
       // this.display_PV = true;
+
+      window.addEventListener('resize', this.handleResize);
+      this.handleResize();
     },
+
+    destroyed() {
+      window.removeEventListener('resize', this.handleResize);
+    },
+
 
     computed: {
       urlWithTime: function(){
@@ -419,6 +509,9 @@ const config = {
 
         dialog: false,
         dialog_reward: false,
+        waitDialog: false,
+        error_message: "",
+        errorMsgDialog: false,
 
         iAmOwner: false,
         future_feature: false,
@@ -477,9 +570,20 @@ const config = {
         },
 
         componentKey: 0,
+
+        window: {
+            width: 0,
+            height: 0
+        },
+
       }),
 
     methods: {
+
+      handleResize() {
+          this.window.width = window.innerWidth;
+          this.window.height = window.innerHeight;
+      },
 
       handleClick(event, ref) {
           this.$refs[ref][event]();
@@ -500,7 +604,12 @@ const config = {
         console.log( "clickea_delete_pov -- Captura: " + this.ss_pov );
       },
 
+
+
+
       async insert_pov( video_id ){
+        try {
+          this.waitDialog = true;      
 
           const near = await connect(config);
           const wallet = new WalletConnection(near, 'SharingShard');
@@ -514,17 +623,17 @@ const config = {
           });
 
 
-        console.log( "video id: " + video_id);
-        this.exp_info = await contract.get_experience({
-          video_n: video_id
-        });
+          console.log( "video id: " + video_id);
+          this.exp_info = await contract.get_experience({
+            video_n: video_id
+          });
 
-        this.inserting_pov = this.exp_info;
+          this.inserting_pov = this.exp_info;
 
-        // alert ("hola: " + wallet.getAccountId() + this.exp_info.owner );
-        if ( this.iAmOwner ){
-          alert( "you, as an owner, are allowed to provide a Point of View");
-        }
+          // alert ("hola: " + wallet.getAccountId() + this.exp_info.owner );
+          if ( this.iAmOwner ){
+            alert( "you, as an owner, are allowed to provide a Point of View");
+          }
 
           console.log( "Experience: " + this.exp_info);
           console.log( this.exp_info.pov.length );
@@ -541,8 +650,23 @@ const config = {
               pov: this.ss_pov,
               date: 10,
           });
-          console.log("Comentario insertado" + this.exp_info);
+          console.log ("Comentario insertado" + this.exp_info);
+          this.waitDialog = false;
+        }
+        catch(err){
+          alert ( err );
+          this.error_message = err;
+          this.waitDialog = false;
+          this.errorMsgDialog = true;
+          return err;
+        }  
       },
+
+
+      closeError() {
+        this.errorMsgDialog = false;
+      },
+
 
       async disp_experiences_for_pov( video_id ){
         const near = await connect(config);
@@ -560,7 +684,7 @@ const config = {
           // alert( "this.exp_info.owner: " + this.exp_info.owner);
           // alert( "accountId: " + wallet.getAccountId());
 
-        if ( wallet.getAccountId() == this.exp_info.owner )
+        if ( wallet.getAccountId() == this.exp_info.owner && this.exp_info.winner == ""  )
           this.iAmOwner = true;
 
 
@@ -615,48 +739,51 @@ const config = {
           this.close()
         },
 
+
+
       async payRewardAndClose(){
+        try {
+          this.waitDialog = true;      
 
-        const video_n = this.exp_id;
-        const participant = this.editedItem.owner;
+          const video_n = this.exp_id;
+          const participant = this.editedItem.owner;
 
-        //alert( "Video: " + video_n + " Participant: " + participant);
-        const near = await connect(config);
-        const wallet = new WalletConnection(near, 'SharingShard');
+          //alert( "Video: " + video_n + " Participant: " + participant);
+          const near = await connect(config);
+          const wallet = new WalletConnection(near, 'SharingShard');
 
-        const contract = new Contract( wallet.account(), CONTRACT_ID, 
-        { 
-          changeMethods:  ['pay_reward'],
-          viewMethods: ['get_experience'],
-          sender: wallet.account(),
-        });
-
-
-        this.exp_info = await contract.get_experience({
-          video_n: video_n // video_id
-        });
-
-        this.expInfo = await contract.pay_reward(
+          const contract = new Contract( wallet.account(), CONTRACT_ID, 
           { 
-            experience_number: video_n,
-            wallet: participant,
-          }, 
-          300000000000000,
-          0
-        )
-        .catch((err) => {
+            changeMethods:  ['pay_reward'],
+            viewMethods: ['get_experience'],
+            sender: wallet.account(),
+          });
+
+
+          this.exp_info = await contract.get_experience({
+            video_n: video_n // video_id
+          });
+
+          this.expInfo = await contract.pay_reward(
+            { 
+              experience_number: video_n,
+              wallet: participant,
+            }, 
+            300000000000000,
+            0
+          );
+          this.dialog_reward = false;
+          this.waitDialog = false;      
+        }
+        catch(err){
           alert ( err );
+          this.error_message = err;
+          this.dialog_reward = false;
+
+          this.waitDialog = false;
+          this.errorMsgDialog = true;
           return err;
         }
-        );
-
-        this.statusT = "pay_reward result: " + this.expInfo;
-        console.log( this.expInfo );
-
-        this.statusT = await contract.get_experience({
-          video_n: video_n // video_id
-        });
-        this.dialog_reward = false;
       },
     },    // methods:
 }   // export

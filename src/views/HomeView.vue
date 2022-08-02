@@ -167,7 +167,7 @@
                 class="mx-0"
               >
 
-              <p class="textBoxLeft">Don\´t wait anymore. Think about a challenge you need to solve and ask for help to solve it fast and reliably in an open space to share your knowledge and experience. At the same time, you earn for your participation while learning from the community new Points of View.</p>
+              <p class="textBoxLeft">Don´t wait anymore. Think about a challenge you need to solve and ask for help to solve it fast and reliably in an open space to share your knowledge and experience. At the same time, you earn for your participation while learning from the community new Points of View.</p>
               </v-row>
             </v-card-text>
 

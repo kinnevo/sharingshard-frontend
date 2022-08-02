@@ -11,6 +11,13 @@ import LazyTube from "vue-lazytube";
 
 Vue.use(LazyTube);
 
+import { createPinia } from 'pinia';
+
+const pinia = createPinia();
+Vue.use(pinia);
+
+
+
 
 // global variable
 
