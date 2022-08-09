@@ -431,7 +431,7 @@
             <div v-if="experienciesview[item-1].status=='InProcess'" class="black white--text mx-auto elevation-6 rounded-lg" ><b>InProcess</b></div>
             <div v-if="experienciesview[item-1].status=='Closed'" class="red white--text mx-auto elevation-6 rounded-lg" ><b>Closed</b></div>
 
-            <v-btn v-show="experienciesview[item-1].status=='InProcess'&&experienciesview[item-1].owner==owner" text color="grey" @click="goToAction( experienciesview[item-1].video_n, 'InProcess' )">
+            <v-btn v-show="experienciesview[item-1].status=='InProcess'&&experienciesview[item-1].owner==userG.currentUser" text color="grey" @click="goToAction( experienciesview[item-1].video_n, 'InProcess' )">
               <span class="">Activate</span>
             </v-btn>
 
@@ -537,7 +537,6 @@ struct Experience{
       visit_num: 0,
 
       experiences_cards: 0,
-      owner: "",
 
       window: {
           width: 0,
@@ -661,7 +660,7 @@ struct Experience{
 
     },
 
-
+//////////////////
     /*
     * Display de experiences of the owner 
     * -1 -- means current signed user
@@ -678,10 +677,10 @@ struct Experience{
         else {
           if ( exp_owner == -1 ) {
             this.newExp.owner = wallet.getAccountId();
-            this.owner=wallet.getAccountId();
           } else {
             this.newExp.owner = exp_owner;
           }
+          this.userG.setCurrentUser(this.newExp.owner);
         }
 
         console.log( "These are the experiences of the user: " + this.newExp.owner )
